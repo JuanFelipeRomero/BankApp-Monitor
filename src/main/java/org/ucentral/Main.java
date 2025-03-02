@@ -5,7 +5,7 @@ import org.quartz.impl.StdSchedulerFactory;
 
 public class Main {
     public static void main(String[] args) {
-
+        System.out.println("------------- MONITOR -------------");
         try {
             // Se crea el Scheduler usando la fábrica de StdSchedulerFactory
             Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
@@ -20,7 +20,7 @@ public class Main {
                     .withIdentity("monitorTrigger", "group1")
                     .startNow()
                     .withSchedule(SimpleScheduleBuilder.simpleSchedule()
-                            .withIntervalInSeconds(5)
+                            .withIntervalInSeconds(10)
                             .repeatForever())
                     .build();
 
@@ -30,7 +30,7 @@ public class Main {
             // Se inicia el Scheduler
             scheduler.start();
 
-            System.out.println("Monitor de servidor iniciado. Se realizará una comprobación cada 5 segundos.");
+            System.out.println("Monitor de servidor iniciado. Se realizará una comprobación cada 10 segundos.");
 
         } catch (SchedulerException e) {
             System.err.println("Error al iniciar el scheduler: " + e.getMessage());

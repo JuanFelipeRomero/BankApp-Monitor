@@ -2,12 +2,12 @@ package org.ucentral;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
-
 public class MonitorJob implements Job {
+    // Nombre del archivo JAR del servidor - fácil de modificar si cambia
+    private static final String SERVER_JAR_NAME = "appBancaria.jar";
 
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
@@ -36,14 +36,15 @@ public class MonitorJob implements Job {
     // Metodo para reiniciar el servidor mediante la ejecución del JAR
     private void restartServer() {
         try {
-            // Comando para ejecutar el JAR del servidor.
-            // Asegúrate de que la ruta al JAR sea correcta.
-            String command = "java -jar ../appBancaria_servidor.jar";
+            // Comando para ejecutar el JAR del servidor que está en la misma carpeta que el monitor
+            String command = "java -jar " + SERVER_JAR_NAME;
 
             System.out.println("Ejecutando comando para reiniciar el servidor: " + command);
 
             // Se utiliza ProcessBuilder para ejecutar el comando del sistema
             ProcessBuilder processBuilder = new ProcessBuilder(command.split(" "));
+            // Establece el directorio de trabajo al directorio actual
+            // Esto asegura que el comando se ejecute desde donde está el JAR del monitor
             Process process = processBuilder.start();
 
             // Opcional: Leer la salida del proceso para monitorear el reinicio
