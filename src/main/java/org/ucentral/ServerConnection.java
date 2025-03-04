@@ -9,7 +9,8 @@ public class ServerConnection {
     private PrintWriter out;
     private BufferedReader in;
     private boolean servidorActivo;
-    private static final int PORT = 12345; // Ajusta el puerto según tu aplicación
+    private static final int PORT = ConfigLoader.getPort(); // Ajusta el puerto según tu aplicación
+    private static final String HOST = ConfigLoader.getHost();
 
     // Metodo para obtener la instancia única
     public static synchronized ServerConnection getInstance() {
@@ -34,16 +35,16 @@ public class ServerConnection {
         if (!servidorActivo) {
             try {
                 if (socket == null || socket.isClosed()) {
-                    socket = new Socket("localhost", PORT); // Conexión al servidor
+                    socket = new Socket(HOST, PORT); // Conexión al servidor
                     out = new PrintWriter(socket.getOutputStream(), true);
                     in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                     servidorActivo = true;
                     System.out.println("Conexión al servidor establecida.");
                 }
             } catch (IOException e) {
-                e.printStackTrace();
                 servidorActivo = false;
-                System.err.println("No se pudo conectar al servidor.");
+                System.err.println("\n------------ Fallo en el servidor ----------- ");
+                System.err.println("No se pudo conectar al servidor: " + e.getMessage());
             }
         } else {
             System.out.println("La conexión ya está activa.");

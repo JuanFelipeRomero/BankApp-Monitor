@@ -15,12 +15,15 @@ public class Main {
                     .withIdentity("monitorJob", "group1")
                     .build();
 
+            //Obtener intervalo de properties
+            int intervalo = ConfigLoader.getIntervalo();
+
             // Se define un Trigger para que el Job se ejecute ahora y luego cada 5 segundos
             Trigger trigger = TriggerBuilder.newTrigger()
                     .withIdentity("monitorTrigger", "group1")
                     .startNow()
                     .withSchedule(SimpleScheduleBuilder.simpleSchedule()
-                            .withIntervalInSeconds(10)
+                            .withIntervalInSeconds(intervalo) //usar intervalo de properties
                             .repeatForever())
                     .build();
 

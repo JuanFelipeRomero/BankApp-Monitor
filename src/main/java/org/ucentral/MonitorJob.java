@@ -7,7 +7,8 @@ import java.io.InputStreamReader;
 
 public class MonitorJob implements Job {
     // Nombre del archivo JAR del servidor - fácil de modificar si cambia
-    private static final String SERVER_JAR_NAME = "appBancaria.jar";
+
+    private static final String SERVER_JAR_NAME = ConfigLoader.getServidorJar();
 
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
@@ -29,7 +30,7 @@ public class MonitorJob implements Job {
             // Se resetea la conexión para que en la siguiente ejecución se intente reconectar
             serverConnection.resetearConexion();
         } else {
-            System.out.println("------------El servidor está activo y respondió correctamente al ping.------------------");
+            System.out.println("\n----------- El servidor está activo y respondió correctamente al ping -----------------");
         }
     }
 
@@ -37,7 +38,8 @@ public class MonitorJob implements Job {
     private void restartServer() {
         try {
             // Comando para ejecutar el JAR del servidor que está en la misma carpeta que el monitor
-            String command = "java -jar " + SERVER_JAR_NAME;
+            //para hacer las pruebas el archivo del servidor junto con el env estan en la carpeta del proyecto
+            String command = "java -jar ../" + SERVER_JAR_NAME;
 
             System.out.println("Ejecutando comando para reiniciar el servidor: " + command);
 
@@ -45,17 +47,7 @@ public class MonitorJob implements Job {
             ProcessBuilder processBuilder = new ProcessBuilder(command.split(" "));
             // Establece el directorio de trabajo al directorio actual
             // Esto asegura que el comando se ejecute desde donde está el JAR del monitor
-            Process process = processBuilder.start();
-
-            // Opcional: Leer la salida del proceso para monitorear el reinicio
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                System.out.println("Servidor: " + line);
-            }
-
-            int exitCode = process.waitFor();
-            System.out.println("El proceso de reinicio del servidor finalizó con código: " + exitCode);
+            processBuilder.start();
 
         } catch (Exception e) {
             System.err.println("Error al intentar reiniciar el servidor: " + e.getMessage());
