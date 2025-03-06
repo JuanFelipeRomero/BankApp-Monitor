@@ -39,7 +39,7 @@ public class MonitorJob implements Job {
         try {
             // Comando para ejecutar el JAR del servidor que está en la misma carpeta que el monitor
             //para hacer las pruebas el archivo del servidor junto con el env estan en la carpeta del proyecto
-            String command = "java -jar ../" + SERVER_JAR_NAME;
+            String command = "java -jar " + SERVER_JAR_NAME;
 
             System.out.println("Ejecutando comando para reiniciar el servidor: " + command);
 
