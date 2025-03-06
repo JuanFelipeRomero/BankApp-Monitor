@@ -1,5 +1,4 @@
-.env
-.config.properties
+config.monitor.properties
 
 target/
 !.mvn/wrapper/maven-wrapper.jar
