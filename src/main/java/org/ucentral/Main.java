@@ -3,10 +3,18 @@ package org.ucentral;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+
 public class Main {
     public static void main(String[] args) {
         System.out.println("------------- MONITOR -------------");
         try {
+            // 1️⃣ Iniciar el servidor RMI en un hilo separado
+            new Thread(() -> iniciarRMI()).start();
+
             // Se crea el Scheduler usando la fábrica de StdSchedulerFactory
             Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
 
@@ -39,6 +47,17 @@ public class Main {
             System.err.println("Error al iniciar el scheduler: " + e.getMessage());
             e.printStackTrace();
         }
+    }
 
+    private static void iniciarRMI() {
+        try {
+            Monitor monitor = new Monitor();
+            Registry registry = LocateRegistry.createRegistry(1099);
+            registry.rebind("MonitorService", (Remote) monitor);
+            System.out.println("✅ Servidor RMI del Monitor en ejecución...");
+        } catch (RemoteException e) {
+            System.err.println("❌ Error al iniciar el servidor RMI: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 }
