@@ -26,7 +26,7 @@ public class Main {
             //Obtener intervalo de properties
             int intervalo = ConfigLoader.getIntervalo();
 
-            // Se define un Trigger para que el Job se ejecute ahora y luego cada 5 segundos
+            // Se define un Trigger para que el Job se ejecute ahora y luego cada X segundos
             Trigger trigger = TriggerBuilder.newTrigger()
                     .withIdentity("monitorTrigger", "group1")
                     .startNow()
@@ -41,7 +41,7 @@ public class Main {
             // Se inicia el Scheduler
             scheduler.start();
 
-            System.out.println("Monitor de servidor iniciado. Se realizará una comprobación cada 10 segundos.");
+            System.out.println("Monitor de servidor iniciado. Se realizará una comprobación cada " + intervalo + " segundos.");
 
         } catch (SchedulerException e) {
             System.err.println("Error al iniciar el scheduler: " + e.getMessage());
