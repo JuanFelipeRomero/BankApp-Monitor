@@ -20,6 +20,9 @@ public class MonitorJob implements Job {
     // Set para mantener registro de los servidores que ya están iniciados
     private static final Set<Integer> servidoresActivos = new HashSet<>();
     
+    // Nuevo conjunto para rastrear reinicios en curso
+    private static final Set<Integer> restartingServers = new HashSet<>();
+    
     // Tiempo mínimo entre reinicios del mismo servidor (en segundos)
     private static final int RESTART_COOLDOWN_SECONDS = 30;
 
@@ -74,6 +77,12 @@ public class MonitorJob implements Job {
                 servidoresActivos.remove(puerto);
             }
         }
+
+        // Nueva validación para evitar reinicios duplicados
+        if (restartingServers.contains(puerto)) {
+            System.out.println("⚠️ El servidor en puerto " + puerto + " ya se está reiniciando. Se omite nueva solicitud.");
+            return;
+        }
         
         System.err.println("El servidor " + servidor.getIp() + ":" + puerto + 
                          " no respondió al ping. Se procederá a reiniciar.");
@@ -99,6 +108,8 @@ public class MonitorJob implements Job {
 
     // Método para reiniciar el servidor mediante la ejecución del JAR
     private boolean restartServer(int puerto) {
+        // Marcar el puerto como en proceso de reinicio
+        restartingServers.add(puerto);
         try {
             // Obtener directorio actual para construir ruta absoluta
             String currentDir = System.getProperty("user.dir");
@@ -142,6 +153,9 @@ public class MonitorJob implements Job {
             System.err.println("Error al intentar reiniciar el servidor: " + e.getMessage());
             e.printStackTrace();
             return false;
+        } finally {
+            // Siempre remover el puerto del conjunto de reinicios en curso
+            restartingServers.remove(puerto);
         }
     }
 }
